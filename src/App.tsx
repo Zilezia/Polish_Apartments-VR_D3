@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 import './App.css'
 
-import { apartmentData } from './data/apartmentD'; // no clue if with this it takes longer to load the page
+// import { apartmentData } from './data/apartmentD'; // no clue if with this it takes longer to load the page
+import { apartmentData } from './data/samllerTest';
 
 import { Polska } from './components/Polska';
 

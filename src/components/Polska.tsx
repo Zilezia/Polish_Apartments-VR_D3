@@ -14,7 +14,7 @@ type MapProps = {
     rooms: number;
     floor: number;
     floorCount: number;
-    buildYear: number;
+    buildYear: number  | null;
     latitude: number;
     longitude: number;
     centreDistance: number;
@@ -24,11 +24,11 @@ type MapProps = {
     postOfficeDistance: number;
     kindergartenDistance: number;
     restaurantDistance: number;
-    collegeDistance: number;
+    collegeDistance: number | null;
     pharmacyDistance: number;
     ownership: string;
     buildingMaterial: string;
-    condition: string;
+    condition: string  | null;
     hasParkingSpace: "yes" | "no";
     hasBalcony: "yes" | "no";
     hasElevator: "yes" | "no";
@@ -40,9 +40,7 @@ type MapProps = {
 
 export const Polska = ({ width, height, geoData, plotData }: MapProps) => {
   const [showPlotData, setShowPlotData] = useState(true);
-  
   const [selectedCity, setSelectedCity] = useState<string>('All');
-
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const transformRef = useRef(d3.zoomIdentity);
 
@@ -51,33 +49,30 @@ export const Polska = ({ width, height, geoData, plotData }: MapProps) => {
     .translate([-600, 3500]);
 
   const filterData = () => {
-    setShowPlotData(prev => !prev);
+    setShowPlotData((prev) => !prev);
   };
 
   // const filterCity = (apCity) => {
   //   setFilteredCity(prev => (prev === apCity ? null : apCity));
   // };
 
-  const handleCityChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectedCity(event.target.value || 'All');
+  const handleCityChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectedCity(e.target.value || 'All');
   };
 
   useEffect(() => {
     const canvas = canvasRef.current;
     const ctx = canvas?.getContext('2d');
     
-    if (!ctx) {
+    if (!canvas || !ctx) {
       return;
     }
 
     const draw = (transform: d3.ZoomTransform) => {
       ctx.save();
-      
       ctx.clearRect(0, 0, width, height);
       ctx.translate(transform.x, transform.y);
       ctx.scale(transform.k, transform.k);
-
-      ctx.beginPath();
 
       const geoPathGenerator = d3
         .geoPath()
@@ -86,7 +81,6 @@ export const Polska = ({ width, height, geoData, plotData }: MapProps) => {
   
       ctx.clearRect(0, 0, width, height);
       ctx.beginPath();
-  
       geoPathGenerator(geoData);
   
       ctx.fillStyle = '#ccc';
@@ -96,28 +90,29 @@ export const Polska = ({ width, height, geoData, plotData }: MapProps) => {
       ctx.lineWidth = 0.5 / transform.k;
       ctx.stroke();
 
-      const filteredPlotData = selectedCity !== 'All'
-        ? plotData.filter(d => d.city === selectedCity ) 
-        : plotData
-      ;
+      const filteredPlotData = 
+        selectedCity !== 'All'
+        ? plotData.filter((d) => d.city === selectedCity ) 
+        : plotData;
+
       if (showPlotData) {
         filteredPlotData.forEach((d) => {
           const [x, y] = projection([d.longitude, d.latitude]) || [0,0];
           
           ctx.beginPath();
-          ctx.arc(x, y, 5 / transform.k, 0, 2 * Math.PI);
+          ctx.arc(x, y, 5/transform.k, 0, 2*Math.PI);
   
           ctx.fillStyle = 'red';
           ctx.fill();
   
           ctx.strokeStyle = 'black';
-          ctx.lineWidth = 1 / transform.k;
+          ctx.lineWidth = 1/transform.k;
           ctx.stroke();
         });
       }
       ctx.restore();
     };
-    const zoom = d3.zoom()
+    const zoom = d3.zoom<HTMLCanvasElement, unknown>()
       .scaleExtent([0.7, 100])
       .translateExtent([[-500, -300], [1300, 1000]])
       .on('zoom', (e: any) => {
@@ -140,12 +135,13 @@ export const Polska = ({ width, height, geoData, plotData }: MapProps) => {
 
     <div className='canvas-container'>
       <canvas ref={canvasRef} width={width} height={height} />
-    </div> <br/>
+    </div> 
+    <br/>
     <div className="tooltip">
       <button onClick={() => filterData()}>
         {showPlotData ? 'Hide data' : 'Show data'}
       </button>
-      <br /> <br />
+      <br /><br />
       <label htmlFor="city">Choose a city: </label>
       <select name="city" id="city" onChange={handleCityChange} value={selectedCity}>
         <option value="All">All</option>
