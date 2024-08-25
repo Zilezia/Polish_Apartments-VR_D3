@@ -37,26 +37,29 @@ function App() {
 
   return (<>
     <h2>D3 Poland</h2>
-    <div className='map-res-container' title='Recommended to leave as is.'>
-      <label htmlFor="map-res">Pick map resolution: </label>
-      <select name="map-res" id="map-res" onChange={handleResChange} value={selectedRes}>
-        <option value="min">Min</option>
-        <option value="medium">Medium</option>
-        <option value="max">Max</option>
-      </select>
+    <br/>
+    <div className="map-cont">
+      <div className='map-res-container' title='Recommended to leave as is.'>
+        <label htmlFor="map-res">Pick map resolution: </label>
+        <select name="map-res" id="map-res" onChange={handleResChange} value={selectedRes}>
+          <option value="min">Min</option>
+          <option value="medium">Medium</option>
+          <option value="max">Max</option>
+        </select>
 
+      </div>
+      <br />
+      {loading && <p className='map-loading'>Loading map...</p>}
+      {error && <p className='map-error'>{error}</p>}
+      {geoData ? (
+        <Polska 
+          width={800} height={600} 
+          geoData={geoData} plotData={apartmentData} 
+        /> 
+      ) : (
+        !loading && 'No data'
+      )}
     </div>
-    <br />
-    {loading && <p className='map-loading'>Loading map...</p>}
-    {error && <p className='map-error'>{error}</p>}
-    {geoData ? (
-      <Polska 
-        width={800} height={600} 
-        geoData={geoData} plotData={apartmentData} 
-      /> 
-    ) : (
-      !loading && 'No data'
-    )}
   </>);
 }
 
