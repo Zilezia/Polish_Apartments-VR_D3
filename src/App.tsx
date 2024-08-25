@@ -1,17 +1,14 @@
 import { useEffect, useState } from 'react';
-import { csv } from 'd3-fetch';
 
 import { Polska } from './components/Polska';
+import apartmentData from './data/tables/data.json';
 
 import './App.css';
-
-// took me so long to finally get my previous map into vite react now i can finally rest for the day
 
 function App() {
   useEffect(() => {
     document.title = 'D3 Poland';
   }, []);
-  const [apartmentData, setApartmentData] = useState<any[]>([]);
   const [selectedRes, setSelectedRes] = useState<string>('medium');
   const [geoData, setGeoData] = useState<any>(null);
   const [loading, setLoading] = useState<boolean>(true);
@@ -35,17 +32,6 @@ function App() {
         console.log("Failed to load map:", err);
       });
       
-      csv('data/tables/data.csv')
-        .then(data => {
-          setApartmentData(data);
-          console.log(data);
-        })
-        .catch(err => {
-          setError("Failed to load apartment data");
-          setLoading(false);
-          console.log("Failed to load apartment data:", err);
-        })
-  
   }, [selectedRes]);
 
 
