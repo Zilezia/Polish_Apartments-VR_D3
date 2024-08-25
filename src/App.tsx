@@ -35,7 +35,7 @@ function App() {
         console.log("Failed to load map:", err);
       });
       
-      csv('./src/data/tables/data.csv')
+      csv('data/tables/data.csv')
         .then(data => {
           setApartmentData(data);
           console.log(data);
