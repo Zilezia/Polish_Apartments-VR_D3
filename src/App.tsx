@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import './App.css'
 
+// kms "union type is too complex" bc of fucking this vvv
 // import { apartmentData } from './data/apartmentD'; // no clue if with this it takes longer to load the page
 import { apartmentData } from './data/samllerTest';
 
@@ -24,7 +25,7 @@ function App() {
     setLoading(true);
     setGeoData(null);
     
-    import(`./data/polska/${selectedRes}`)
+    import(`./data/polska/${selectedRes}.ts`)
       .then(module => {
         setGeoData(module.geoData);
         setLoading(false);
