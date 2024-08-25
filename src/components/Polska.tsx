@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import * as d3 from 'd3';
 import { FeatureCollection } from 'geojson';
 
@@ -41,7 +41,7 @@ type MapProps = {
 export const Polska = ({ width, height, geoData, plotData }: MapProps) => {
   const [showPlotData, setShowPlotData] = useState(true);
   
-  const [selectedCity, setSelectedCity] = useState<string | null>('All');
+  const [selectedCity, setSelectedCity] = useState<string>('All');
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const transformRef = useRef(d3.zoomIdentity);
@@ -129,6 +129,7 @@ export const Polska = ({ width, height, geoData, plotData }: MapProps) => {
     draw(transformRef.current);
 
   }, [
+    canvasRef,
     width, height, 
     projection, geoData, 
     plotData, showPlotData,
