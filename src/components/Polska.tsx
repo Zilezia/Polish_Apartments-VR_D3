@@ -2,13 +2,40 @@ import { useState, useRef, useEffect } from 'react';
 import * as d3 from 'd3';
 import { FeatureCollection } from 'geojson';
 
-import { Apartment } from '../data/apartmentD'; //
-
 type MapProps = {
   width: number;
   height: number;
   geoData: FeatureCollection;
-  plotData: Apartment[];
+  plotData: {
+    id: string;
+    city: string;
+    type: string;
+    squareMeters: number;
+    rooms: number;
+    floor: number;
+    floorCount: number;
+    buildYear: number;
+    latitude: number;
+    longitude: number;
+    centreDistance: number;
+    poiCount: number;
+    schoolDistance: number;
+    clinicDistance: number;
+    postOfficeDistance: number;
+    kindergartenDistance: number;
+    restaurantDistance: number;
+    collegeDistance: number;
+    pharmacyDistance: number;
+    ownership: string;
+    buildingMaterial: string;
+    condition: string;
+    hasParkingSpace: "yes" | "no";
+    hasBalcony: "yes" | "no";
+    hasElevator: "yes" | "no";
+    hasSecurity: "yes" | "no";
+    hasStorageRoom: "yes" | "no";
+    price: number
+  }[];
 };
 
 export const Polska = ({ width, height, geoData, plotData }: MapProps) => {
@@ -90,11 +117,10 @@ export const Polska = ({ width, height, geoData, plotData }: MapProps) => {
       }
       ctx.restore();
     };
-  
     const zoom = d3.zoom()
       .scaleExtent([0.7, 100])
       .translateExtent([[-500, -300], [1300, 1000]])
-      .on('zoom', (e) => {
+      .on('zoom', (e: any) => {
           const transform = e.transform;
           transformRef.current = transform;
           draw(transform); // Re-draw the canvas with the new transform
