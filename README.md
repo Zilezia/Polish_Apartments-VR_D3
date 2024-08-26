@@ -6,3 +6,6 @@ Poland geoJSON render: <br/>
 
 Apartments added (08/2023): <br/>
 ![Added apartments](./images/Apartments-pl.png "Apartments")
+
+Hover tooltip: <br/>
+![Hover tooltip](./images/tooltip_show.png "Price")

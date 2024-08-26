@@ -3,51 +3,54 @@ import * as d3 from 'd3';
 import { FeatureCollection } from 'geojson';
 import ReactSlider from 'react-slider';
 
-import './Slit.css';
+import './style/index';
+
+// bunch of nulls 
+interface apartmentDataType {
+  id: string;
+  city: string;
+  type: string | null;
+  squareMeters: number | null;
+  rooms: number | null;
+  floor: number | null;
+  floorCount: number | null;
+  buildYear: number | null;
+  latitude: number;
+  longitude: number;
+  centreDistance: number | null;
+  poiCount: number | null;
+  schoolDistance: number | null;
+  clinicDistance: number | null;
+  postOfficeDistance: number | null;
+  kindergartenDistance: number | null;
+  restaurantDistance: number | null;
+  collegeDistance: number | null;
+  pharmacyDistance: number | null;
+  ownership: string | null;
+  buildingMaterial: string | null;
+  condition: string  | null;
+  hasParkingSpace: "yes" | "no";
+  hasBalcony: "yes" | "no" | null;
+  hasElevator: "yes" | "no" | null;
+  hasSecurity: "yes" | "no" | null;
+  hasStorageRoom: "yes" | "no" | null;
+  price?: number
+}
 
 type MapProps = {
   width: number;
   height: number;
   geoData: FeatureCollection;
-  plotData: {
-    id: string;
-    city: string;
-    type: string | null;
-    squareMeters: number | null;
-    rooms: number | null;
-    floor: number | null;
-    floorCount: number | null;
-    buildYear: number | null;
-    latitude: number;
-    longitude: number;
-    centreDistance: number | null;
-    poiCount: number | null;
-    schoolDistance: number | null;
-    clinicDistance: number | null;
-    postOfficeDistance: number | null;
-    kindergartenDistance: number | null;
-    restaurantDistance: number | null;
-    collegeDistance: number | null;
-    pharmacyDistance: number | null;
-    ownership: string | null;
-    buildingMaterial: string | null;
-    condition: string  | null;
-    hasParkingSpace: "yes" | "no";
-    hasBalcony: "yes" | "no" | null;
-    hasElevator: "yes" | "no" | null;
-    hasSecurity: "yes" | "no" | null;
-    hasStorageRoom: "yes" | "no" | null;
-    price: number
-  }[];
+  plotData: apartmentDataType[];
 };
 
 export const Polska = ({ width, height, geoData, plotData }: MapProps) => {
   const [showPlotData, setShowPlotData] = useState(true);
   const [selectedCity, setSelectedCity] = useState<string>('All');
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
-  const [hoveredData, setHoveredData] = useState(null);
+  const [hoveredData, setHoveredData] = useState<apartmentDataType|null>(null);
 
-  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const transformRef = useRef(d3.zoomIdentity);
   
   const projection = d3.geoMercator()
@@ -146,50 +149,61 @@ export const Polska = ({ width, height, geoData, plotData }: MapProps) => {
     draw(transformRef.current);
     canvas.addEventListener('mousemove', handleMouseMove);
 
-    const screenMouseY = (mousePos.y * transformRef.current.k) + transformRef.current.y + rect.top;
-    const screenMouseX = (mousePos.x * transformRef.current.k) + transformRef.current.x + rect.left;
-
   }, [
-    width, height, canvasRef, projection,
+    width, height, projection, // canvas stuff
     mousePos,// mouse
     geoData, plotData, // data
     showPlotData, selectedCity, // filters
   ]);
 
+  const nf = new Intl.NumberFormat('en-US',{
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  });
+  
   const maxVal = 100;
   const minVal = 0;
+  
+  const ratePLNUSD = 0.260968;
+  const pricePLN = hoveredData?.price ?? 0;
+  const priceUSD = hoveredData?.price !== undefined 
+    ? hoveredData?.price * ratePLNUSD
+    : 0
+  ;
 
   return (<>
 
-    <div className='canvas-container'>
-      <canvas ref={canvasRef} width={width} height={height} />
+    <div className='canvas-cont'>
+      <canvas className='canvas' ref={canvasRef} width={width} height={height} />
+      <div className="side-tooltip">
+        
+        <p className='side-tt tt-attr-label'>Price:</p>
+        {pricePLN 
+          ? <>
+            <p className='side-tt tt-attr-val' id='pln-price'>{nf.format(pricePLN)} zł</p>
+            <p className='side-tt tt-attr-val' id='usd-price'>(${nf.format(priceUSD)})</p>
+          </>
+          :''
+        }
+      </div>
       {hoveredData && (
-        <div
-          id='tooltip'
+        <div className='hov-tooltip'
           style={{
-            position: 'absolute',
-            top: `${
-              (mousePos.y * transformRef.current.k) + transformRef.current.y
-              + 150
-            }px`,
-            left: `${
-              (mousePos.x * transformRef.current.k) + transformRef.current.x
-              +15
-            }px`,
-            backgroundColor: 'rgba(0, 0, 0, 0.7)',
-            color: 'white',
-            padding: '5px',
-            borderRadius: '5px',
-            pointerEvents: 'none',
+            top: `${(mousePos.y*transformRef.current.k)+transformRef.current.y}px`,
+            left: `${(mousePos.x*transformRef.current.k)+transformRef.current.x}px`
           }}
         >
-          {hoveredData.city}
+          <div className='tt-attr-container'>
+            <p className='hover-tt tt-attr-label'>Price:</p>
+            <p className='hover-tt tt-attr-val' id='pln-price'>{nf.format(pricePLN)} zł</p>
+            <p className='hover-tt tt-attr-val' id='usd-price'>(${nf.format(priceUSD)})</p>
+          </div>
         </div>
       )}
-    </div> 
-    <br/>
-    
-    <div className="tooltip">
+    </div>
+
+  
+    <div className="data-filtering">
       <ReactSlider
           className="horizontal-slider"
           thumbClassName="price-handle"
@@ -205,10 +219,12 @@ export const Polska = ({ width, height, geoData, plotData }: MapProps) => {
           pearling
           minDistance={5}
       />
+
       <button onClick={() => filterData()}>
         {showPlotData ? 'Hide data' : 'Show data'}
       </button>
-      <br /><br />
+
+      {/* cba having this dynamic */}
       <label htmlFor="city">Choose a city: </label>
       <select name="city" id="city" onChange={handleCityChange} value={selectedCity}>
         <option value="All">All</option>
