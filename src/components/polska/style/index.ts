@@ -1,2 +1,2 @@
 import './Canvas.css';
-import './Filter.css';
+import './Slit.css';

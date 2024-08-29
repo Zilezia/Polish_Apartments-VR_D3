@@ -1,0 +1,50 @@
+.price-range-cont, .date-range-cont {
+    width: 700px;
+}
+.price-slider, .date-slider {
+    height: 2em;
+    margin: .7em 1em;
+}
+.price-track, .date-track {
+    top: .7em;
+    height: 7px;
+    border-radius: 7px;
+}
+/* left n right */
+.price-track-0, .price-track-2,
+.date-track-1 {
+    background: #1a1a1a;;
+}
+/* middle */
+.price-track-1, 
+.date-track-0 {
+    background: lightskyblue;
+}
+.price-handle, .date-handle{
+    width: 2em;
+    height: 2em;
+    line-height: 1.2em;
+    border-radius: 50%;
+    font-size: 0.9em;
+    text-align: center;
+    background-color: black;
+    color: white;
+    cursor: pointer;
+    border: 5px solid #1a1a1a;;
+    box-sizing: border-box;
+}
+
+/* .val-bubble {
+    display: none;
+}
+
+.date-handle:active.val-bubble {
+    position: absolute;
+    top: -25px;
+    background-color: #333;
+    color: white;
+    padding: 2px 5px;
+    border-radius: 3px;
+    font-size: 12px;
+    text-align: center;
+} */
