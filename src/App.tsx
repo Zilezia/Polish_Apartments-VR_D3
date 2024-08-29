@@ -72,8 +72,7 @@ function App() {
     
   }, [selectedRes]);
   
-  // const apartmentPath = './src/data/apartments/apartments_pl_2023_08-2024_06.csv';
-  const apartmentPath = '/apartments_pl_2023_08-2024_06.csv';
+  const apartmentPath = 'https://raw.githubusercontent.com/Zilezia/Polish_Apartments-VR_D3/main/public/apartments_pl_2023_08-2024_06.csv';
 
   useEffect(() => {
     csv(apartmentPath, function(d): apartmentDataType {
