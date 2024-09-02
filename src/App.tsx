@@ -141,7 +141,7 @@ function App() {
           geoData={geoData} plotData={apartmentData} 
         /> 
       ) : (
-        !loading && 'No data'
+        !loading && 'Please wait a moment, or refresh the page if it nothing appeared yet.' // modern problems require modern solutions (yeah very 'modern')
       )}
     </div>
   </>);
